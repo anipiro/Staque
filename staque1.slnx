@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="staque1/staque1.vcxproj" Id="43affb87-0240-4b0f-a95e-fb35ab355d26" />
+</Solution>
