@@ -1,138 +1,119 @@
 ---
 
-# Staque — Unique Integer Hybrid (Stack + Deque) using Doubly Linked List
+# Staque Data Structure
 
-## 📌 Description
+## Overview
 
-**Staque** is a custom data structure that stores **only unique integers** and combines behaviors of a **stack (LIFO)** and a **deque (double-ended insertion)**.
+**Staque** is a custom data structure designed to store **only unique integers**.
+It combines characteristics of a **stack (LIFO)** and a **deque**, while being implemented entirely using a **doubly linked list**.
 
-* **Insertion depends on parity**
-
-  * **Odd** numbers are inserted on the **left**
-  * **Even** numbers are inserted on the **right**
-* **Removal follows LIFO**
-
-  * Regardless of where a value was inserted, the *last inserted value* is removed first
-* Implemented strictly using a **doubly linked list**
+The structure enforces special rules based on whether values are **odd or even**, both during insertion and search.
 
 ---
 
-## ✅ Core Rules
+## Core Rules
 
-1. Only **unique integers** are stored (duplicates are ignored).
-2. The structure is implemented with a **doubly linked list** (`prev` / `next`).
-3. **Parity-based insertion**:
-
-   * Even → right end
-   * Odd → left end
-4. **LIFO behavior** is respected for removal and “last inserted” access.
+* Only **unique integers** are allowed (duplicates are ignored).
+* The structure is implemented using a **doubly linked list**.
+* **Odd numbers** are inserted on the **left end**.
+* **Even numbers** are inserted on the **right end**.
+* Removal of elements follows the **LIFO (Last In, First Out)** principle.
 
 ---
 
-## 🧱 Functionality
+## Main Operations
 
-### Get Last Inserted Value (Peek)
+### Insert
 
-Returns the most recently inserted value without removing it.
+* Inserts a value only if it does not already exist.
+* Odd values are inserted on the left.
+* Even values are inserted on the right.
+* Updates the internal LIFO tracking order.
+
+---
+
+### Get Last Inserted Value
+
+* Returns the most recently inserted value.
+* Does not remove the value from the structure.
 
 ---
 
 ### Search
 
-Search behavior depends on the parity of the target value:
+Search behavior depends on the parity of the searched value:
 
-* **Even value search**
+* Searching for an **even value**:
 
-  * starts from the **right end**
-  * traverses **only even values**
-  * stops immediately if an odd value is encountered
+  * Starts from the **right end**
+  * Traverses **only even values**
+  * Stops immediately if an odd value is encountered
 
-* **Odd value search**
+* Searching for an **odd value**:
 
-  * starts from the **left end**
-  * traverses **only odd values**
-  * stops immediately if an even value is encountered
+  * Starts from the **left end**
+  * Traverses **only odd values**
+  * Stops immediately if an even value is encountered
 
-This ensures that search never crosses into the opposite parity zone.
+The search never crosses into the opposite parity.
 
 ---
 
 ### Delete (with Default Arguments)
 
-A single deletion function supports multiple deletion modes through default parameters.
+A single delete function supports multiple deletion modes:
 
-#### Delete Even Values
+* Delete a given number of **even values** from the right end
+* Delete a given number of **odd values** from the left end
+* Delete a given number of values using **LIFO order**
 
-* Deletes a specified number of **even values from the right end**
-* If there are not enough even values, **nothing is deleted** and a message is printed
+Behavior rules:
 
-#### Delete Odd Values
+* If there are not enough values for even/odd deletion, nothing is deleted.
+* If LIFO deletion requests more values than exist, all elements are deleted.
+* Informative messages are printed for each case.
 
-* Deletes a specified number of **odd values from the left end**
-* If there are not enough odd values, **nothing is deleted** and a message is printed
-
-#### Delete Using LIFO
-
-* Deletes a specified number of values following **LIFO order**
-* If fewer values exist than requested:
-
-  * all elements are deleted
-  * a message is printed
-
-The exact function signature and number of parameters are implementation-defined.
+The exact function signature is implementation-defined.
 
 ---
 
-### Insert
+### Extract Only Evens or Only Odds
 
-Adds a new value only if it does not already exist:
-
-* odd → inserted on the left
-* even → inserted on the right
-  Updates all links and LIFO tracking.
+* Returns a collection containing only even values **or** only odd values.
+* Argument design is flexible (flag, enum, etc.).
 
 ---
 
-### Extract Only Evens / Only Odds
+### Copy Control
 
-Returns a collection containing:
-
-* only even values, or
-* only odd values
-
-Argument design is flexible (flag, enum, etc.).
-
----
-
-### Copy Control (Rule of 3)
-
-The structure properly implements:
+The structure correctly implements:
 
 * Copy constructor
 * Assignment operator
 * Destructor
 
-This guarantees safe deep copying and correct memory management.
+This ensures safe memory management and deep copying.
 
 ---
 
-### Output Operator `<<`
+### Output Operator
 
-Overloaded output operator prints the structure in a readable and organized format.
+The output operator (`<<`) is overloaded to print the contents of the structure in a readable format.
 
 ---
 
-## 🧪 Driver Program (`main`)
+## Driver Program (main)
 
 The `main()` function demonstrates full functionality:
 
-* Creates a `Staque` object and fills it with **50 random integers** in the range **[1, 100]**
+* Creates a `Staque` object
+* Fills it with **50 random integers** in the range `[1, 100]`
 * Demonstrates deletion in three scenarios:
 
-  1. Deleting both odd and even values
-  2. Deleting only odd values
-  3. Deleting a fixed number of elements using LIFO
-* Clearly shows the use of:
+  * deleting both odd and even values
+  * deleting only odd values
+  * deleting a fixed number of elements using LIFO
+* Clearly shows usage of:
 
   * all methods
   * output operator
@@ -142,7 +123,7 @@ The `main()` function demonstrates full functionality:
 
 ---
 
-## 📁 Suggested Project Structure
+## Project Structure
 
 ```
 Staque/
@@ -153,28 +134,26 @@ Staque/
 └── README.md
 ```
 
+
 ---
 
-## 🧠 Concepts Practiced
+## Concepts Demonstrated
 
 * Doubly linked list implementation
 * Unique element enforcement
-* Hybrid stack–deque behavior
-* Parity-restricted traversal
+* Hybrid stack and deque behavior
+* Parity-restricted traversal logic
 * Default arguments in function design
-* Copy control (Rule of 3)
+* Rule of Three
 * Operator overloading
 
 ---
 
-## 📌 Notes
+## Notes
 
 * Duplicate values are ignored during insertion.
-* Search never crosses into the opposite parity.
-* Deletion is atomic when requirements are not met:
-
-  * even/odd deletion deletes nothing if insufficient values exist
-  * LIFO deletion removes all elements if fewer than requested
+* Search operations are strictly parity-based.
+* Deletion operations behave atomically when requirements are not met.
 
 ---
 
