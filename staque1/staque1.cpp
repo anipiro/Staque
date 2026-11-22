@@ -82,7 +82,7 @@ void Staquee::washaleElemeneti(Elementi* elementi) {
         unsigned long long maxIndex = 0;
 
         while (axlandeli != nullptr) {
-            if (axlandeli->indeqsi > maxIndex && axlandeli != elementi) {
+            if (axlandeli != elementi && (newLast == nullptr || axlandeli->indeqsi > maxIndex)) {
                 maxIndex = axlandeli->indeqsi;
                 newLast = axlandeli;
             }
