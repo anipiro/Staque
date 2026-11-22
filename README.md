@@ -28,8 +28,6 @@ All three arguments of `remove` default to 0 and exactly one must be positive, o
 | `search`, `getValues`, `getEvenCount`, `getOddCount` | O(n) |
 | `remove` | O(n) for each value removed |
 
-Known issue: that scan only accepts sequence numbers above 0, so the first value ever added is never picked as the new last-added node. Once it is the only value left, `getLastAdded()` throws and last-in, first-out removal skips it. `remove(0, 0, n)` with `n` equal to the size therefore leaves that one value behind.
-
 ## Example
 
 Consistent with `main()` in `staque1.cpp`:
