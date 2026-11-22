@@ -1,159 +1,63 @@
+# Staque
 
+A C++ container of unique integers built on a doubly linked list: odd values go in at the left end, even values at the right end, and the last value added can be read or removed like a stack. Written for a university assignment.
 
-# Staque Data Structure
+Identifiers and console messages are Georgian written in Latin letters. The class is spelled `Staquee` in the code.
 
-## Overview
+## What it does
 
-**Staque** is a custom data structure designed to store **only unique integers**.
-It combines characteristics of a **stack (LIFO)** and a **deque**, while being implemented entirely using a **doubly linked list**.
+- **Add.** `add(value)` puts an odd value at the left end and an even value at the right end. It returns `false` and changes nothing if the value is already stored.
+- **Last added.** `getLastAdded()` returns the most recently added value without removing it. On an empty staque it throws `std::runtime_error`.
+- **Search by parity.** `search(value)` starts from the right end for an even value and from the left end for an odd one, and stops as soon as it meets a value of the other parity.
+- **Remove.** `remove(evens, odds, total)` has three modes, picked by which argument is positive: remove that many even values from the right end, that many odd values from the left end, or that many values in last-in, first-out order.
+- **Read one parity.** `getValues(true)` returns the even values as a `std::vector<int>`, `getValues(false)` the odd ones, both in left-to-right order.
+- **Copy and print.** Copy constructor, copy-and-swap assignment, destructor, and `operator<<`, which prints `Staque [a, b, c]`.
 
-The structure enforces special rules based on whether values are **odd or even**, both during insertion and search.
+## How it works
 
----
+Each `Elementi` node holds a value, the two list links and a sequence number taken from a counter that goes up on every successful `add`. `Staquee` keeps pointers to the left end, the right end and the node added last.
 
-## Core Rules
+Because odd values are only ever added on the left and even values only on the right, all odd values sit to the left of all even values. That is why a search can stop at the first value of the other parity.
 
-* Only **unique integers** are allowed (duplicates are ignored).
-* The structure is implemented using a **doubly linked list**.
-* **Odd numbers** are inserted on the **left end**.
-* **Even numbers** are inserted on the **right end**.
-* Removal of elements follows the **LIFO (Last In, First Out)** principle.
+All three arguments of `remove` default to 0 and exactly one must be positive, otherwise it prints a message and removes nothing. If there are fewer even or odd values than asked for, nothing is removed. If `total` is larger than the size, everything is removed. Removing the node added last makes the staque scan for the remaining node with the highest sequence number.
 
----
+| Operation | Cost |
+| --- | --- |
+| `add` | O(n), from the scan for duplicates |
+| `getLastAdded`, `isEmpty`, `getZoma` (size) | O(1) |
+| `search`, `getValues`, `getEvenCount`, `getOddCount` | O(n) |
+| `remove` | O(n) for each value removed |
 
-## Main Operations
+Known issue: that scan only accepts sequence numbers above 0, so the first value ever added is never picked as the new last-added node. Once it is the only value left, `getLastAdded()` throws and last-in, first-out removal skips it. `remove(0, 0, n)` with `n` equal to the size therefore leaves that one value behind.
 
-### Insert
+## Example
 
-* Inserts a value only if it does not already exist.
-* Odd values are inserted on the left.
-* Even values are inserted on the right.
-* Updates the internal LIFO tracking order.
+Consistent with `main()` in `staque1.cpp`:
 
----
+```cpp
+Staquee s;
+s.add(5);
+s.add(10);
+s.add(15);
+s.add(20);              // list order is now 15, 5, 10, 20
+s.add(10);              // false, already stored
 
-### Get Last Inserted Value
+s.getLastAdded();       // 20
+s.search(10);           // true
+cout << s << endl;
 
-* Returns the most recently inserted value.
-* Does not remove the value from the structure.
-
----
-
-### Search
-
-Search behavior depends on the parity of the searched value:
-
-* Searching for an **even value**:
-
-  * Starts from the **right end**
-  * Traverses **only even values**
-  * Stops immediately if an odd value is encountered
-
-* Searching for an **odd value**:
-
-  * Starts from the **left end**
-  * Traverses **only odd values**
-  * Stops immediately if an even value is encountered
-
-The search never crosses into the opposite parity.
-
----
-
-### Delete (with Default Arguments)
-
-A single delete function supports multiple deletion modes:
-
-* Delete a given number of **even values** from the right end
-* Delete a given number of **odd values** from the left end
-* Delete a given number of values using **LIFO order**
-
-Behavior rules:
-
-* If there are not enough values for even/odd deletion, nothing is deleted.
-* If LIFO deletion requests more values than exist, all elements are deleted.
-* Informative messages are printed for each case.
-
-The exact function signature is implementation-defined.
-
----
-
-### Extract Only Evens or Only Odds
-
-* Returns a collection containing only even values **or** only odd values.
-* Argument design is flexible (flag, enum, etc.).
-
----
-
-### Copy Control
-
-The structure correctly implements:
-
-* Copy constructor
-* Assignment operator
-* Destructor
-
-This ensures safe memory management and deep copying.
-
----
-
-### Output Operator
-
-The output operator (`<<`) is overloaded to print the contents of the structure in a readable format.
-
----
-
-## Driver Program (main)
-
-The `main()` function demonstrates full functionality:
-
-* Creates a `Staque` object
-* Fills it with **50 random integers** in the range `[1, 100]`
-* Demonstrates deletion in three scenarios:
-
-  * deleting both odd and even values
-  * deleting only odd values
-  * deleting a fixed number of elements using LIFO
-* Clearly shows usage of:
-
-  * all methods
-  * output operator
-  * copy constructor
-  * assignment operator
-  * destructor behavior through object lifetime
-
----
-
-## Project Structure
-
-```
-Staque/
-│
-├── Staque.h
-├── Staque.cpp
-├── main.cpp
-└── README.md
+s.remove(1);            // one even value from the right end
+s.remove(0, 1);         // one odd value from the left end
+s.remove(0, 0, 1);      // the value added last
 ```
 
+`main()` fills a staque with 50 distinct random values from 1 to 100, then shows search, copying, assignment, the three removal modes and the error cases.
 
----
+## Build and run
 
-## Concepts Demonstrated
+The repository is a Visual Studio solution: open `staque1.slnx` and run it. With g++:
 
-* Doubly linked list implementation
-* Unique element enforcement
-* Hybrid stack and deque behavior
-* Parity-restricted traversal logic
-* Default arguments in function design
-* Rule of Three
-* Operator overloading
-
----
-
-## Notes
-
-* Duplicate values are ignored during insertion.
-* Search operations are strictly parity-based.
-* Deletion operations behave atomically when requirements are not met.
-
----
-
+```
+g++ -std=c++17 staque1/staque1.cpp -o staque
+./staque
+```
